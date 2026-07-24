@@ -112,7 +112,8 @@ export default function NGODashboard() {
         volunteerId: null,
         volunteerName: null,
         status: 'claimed',
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        foodSafety: item.foodSafety || null
       });
 
       toast.success("Donation claimed! Courier route generated.");
@@ -313,45 +314,75 @@ export default function NGODashboard() {
             </div>
           ) : (
             <div className="space-y-4">
-              {availableItems.map((item) => (
-                <div key={item.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                  
-                  <div className="space-y-3 flex-grow">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <h4 className="text-base font-bold text-slate-900">{item.foodName}</h4>
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-                        {item.foodCategory}
-                      </span>
-                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 flex items-center gap-1 shadow-sm">
-                        <Sparkles className="w-3.5 h-3.5 text-green-600" />
-                        <span>{item.matchScore}% Match Score</span>
-                      </span>
-                    </div>
+              {availableItems.map((item) => {
+                const safety = item.foodSafety || {
+                  freshnessScore: 85,
+                  safeUntil: new Date(Date.now() + (item.expiryTime || 4) * 3600 * 1000).toISOString(),
+                  risk: 'Safe',
+                  pickupPriority: 'Medium',
+                  status: 'Safe'
+                };
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
-                      <div>
-                        <span className="font-semibold text-slate-400">Establishment:</span>{' '}
-                        <span className="font-medium text-slate-700">{item.restaurantName}</span>
+                return (
+                  <div key={item.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    
+                    <div className="space-y-3 flex-grow">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h4 className="text-base font-bold text-slate-900">{item.foodName}</h4>
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                          {item.foodCategory}
+                        </span>
+                        <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 flex items-center gap-1 shadow-sm">
+                          <Sparkles className="w-3.5 h-3.5 text-green-600" />
+                          <span>{item.matchScore}% Match Score</span>
+                        </span>
+                        
+                        {/* Risk Badge */}
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${
+                          safety.risk === "Safe" ? "bg-green-50 text-green-700 border-green-200" :
+                          safety.risk === "Moderate" ? "bg-amber-50 text-amber-700 border-amber-250" :
+                          "bg-red-50 text-red-700 border-red-200"
+                        }`}>
+                          {safety.risk === "Safe" ? "🟢 Safe" :
+                           safety.risk === "Moderate" ? "🟡 Donate Soon" : "🔴 Unsafe"}
+                        </span>
+
+                        {/* Urgency Badge */}
+                        {safety.pickupPriority && safety.pickupPriority !== 'None' && (
+                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${
+                            safety.pickupPriority === "Urgent" ? "bg-red-50 text-red-700 border-red-200 animate-pulse" :
+                            safety.pickupPriority === "High" ? "bg-orange-50 text-orange-700 border-orange-200" :
+                            "bg-slate-50 text-slate-600 border-slate-200"
+                          }`}>
+                            Priority: {safety.pickupPriority}
+                          </span>
+                        )}
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{item.distance.toFixed(2)} km away</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-slate-400" />
-                        <span>Expires in {item.expiryTime} hours</span>
-                      </div>
-                      <div>
-                        <span className="font-semibold text-slate-400">Weight:</span> {item.quantity} kg
-                      </div>
-                      <div>
-                        <span className="font-semibold text-slate-400">Est. Meals:</span> {item.estimatedMeals} meals
-                      </div>
-                      <div>
-                        <span className="font-semibold text-slate-400">Pickup window:</span> {item.pickupWindow}
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
+                        <div>
+                          <span className="font-semibold text-slate-400">Establishment:</span>{' '}
+                          <span className="font-medium text-slate-700">{item.restaurantName}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{item.distance.toFixed(2)} km away</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-slate-400" />
+                          <span>Safe until: <strong>{new Date(safety.safeUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong></span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-400">Weight:</span> {item.quantity} kg
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-400">Freshness Index:</span> <strong className="text-green-700">{safety.freshnessScore}%</strong>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-400">Pickup window:</span> {item.pickupWindow}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
                   <button
                     onClick={() => handleClaim(item)}

@@ -12,6 +12,7 @@ import RestaurantDashboard from './pages/RestaurantDashboard';
 import NGODashboard from './pages/NGODashboard';
 import VolunteerDashboard from './pages/VolunteerDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import ImpactAnalytics from './pages/ImpactAnalytics';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -89,6 +90,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/analytics" 
+            element={
+              <ProtectedRoute allowedRoles={['restaurant', 'ngo', 'volunteer', 'admin']}>
+                <ImpactAnalytics />
               </ProtectedRoute>
             } 
           />

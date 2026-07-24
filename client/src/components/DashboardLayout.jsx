@@ -40,7 +40,7 @@ export default function DashboardLayout({ title, children }) {
         { name: 'Dashboard', path: '/restaurant', icon: LayoutDashboard },
         { name: 'Add Food Offer', path: '/restaurant?tab=add-food', icon: PlusCircle },
         { name: 'My Listings', path: '/restaurant?tab=my-listings', icon: ClipboardList },
-        { name: 'Analytics', path: '/restaurant?tab=analytics', icon: BarChart3 }
+        { name: 'Impact Analytics', path: '/analytics', icon: BarChart3 }
       ]
     },
     ngo: {
@@ -51,7 +51,7 @@ export default function DashboardLayout({ title, children }) {
         { name: 'Dashboard', path: '/ngo', icon: LayoutDashboard },
         { name: 'Nearby Offers', path: '/ngo?tab=nearby', icon: Map },
         { name: 'Accepted Claims', path: '/ngo?tab=claims', icon: ClipboardList },
-        { name: 'Analytics', path: '/ngo?tab=analytics', icon: BarChart3 }
+        { name: 'Impact Analytics', path: '/analytics', icon: BarChart3 }
       ]
     },
     volunteer: {
@@ -61,7 +61,8 @@ export default function DashboardLayout({ title, children }) {
       links: [
         { name: 'Dashboard', path: '/volunteer', icon: LayoutDashboard },
         { name: 'Nearby Pickups', path: '/volunteer?tab=pickups', icon: Map },
-        { name: 'My Deliveries', path: '/volunteer?tab=deliveries', icon: ClipboardList }
+        { name: 'My Deliveries', path: '/volunteer?tab=deliveries', icon: ClipboardList },
+        { name: 'Impact Analytics', path: '/analytics', icon: BarChart3 }
       ]
     },
     admin: {
@@ -71,7 +72,8 @@ export default function DashboardLayout({ title, children }) {
       links: [
         { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
         { name: 'Manage Users', path: '/admin?tab=users', icon: Users },
-        { name: 'Active Listings', path: '/admin?tab=listings', icon: ClipboardList }
+        { name: 'Active Listings', path: '/admin?tab=listings', icon: ClipboardList },
+        { name: 'Impact Analytics', path: '/analytics', icon: BarChart3 }
       ]
     }
   };

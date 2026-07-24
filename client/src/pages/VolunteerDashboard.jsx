@@ -256,8 +256,16 @@ export default function VolunteerDashboard() {
             <div className="space-y-4">
               {nearbyRequests.map((request) => {
                 const distance = calculateDistance(request.restaurantLocation, request.ngoLocation);
+                const safety = request.foodSafety || {
+                  freshnessScore: 85,
+                  safeUntil: new Date(Date.now() + 4 * 3600 * 1000).toISOString(),
+                  risk: 'Safe',
+                  pickupPriority: 'Medium',
+                  status: 'Safe'
+                };
+
                 return (
-                  <div key={request.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                  <div key={request.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6 animate-fadeIn">
                     
                     <div className="space-y-3 flex-grow">
                       <div className="flex flex-wrap items-center gap-3">
@@ -265,6 +273,27 @@ export default function VolunteerDashboard() {
                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
                           Pending Dispatch
                         </span>
+
+                        {/* Risk Badge */}
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${
+                          safety.risk === "Safe" ? "bg-green-50 text-green-700 border-green-200" :
+                          safety.risk === "Moderate" ? "bg-amber-50 text-amber-700 border-amber-250" :
+                          "bg-red-50 text-red-700 border-red-200"
+                        }`}>
+                          {safety.risk === "Safe" ? "🟢 Safe" :
+                           safety.risk === "Moderate" ? "🟡 Donate Soon" : "🔴 Unsafe"}
+                        </span>
+
+                        {/* Urgency Badge */}
+                        {safety.pickupPriority && safety.pickupPriority !== 'None' && (
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${
+                            safety.pickupPriority === "Urgent" ? "bg-red-50 text-red-750 border-red-200 animate-pulse" :
+                            safety.pickupPriority === "High" ? "bg-orange-50 text-orange-700 border-orange-200" :
+                            "bg-slate-50 text-slate-650 border-slate-200"
+                          }`}>
+                            Priority: {safety.pickupPriority}
+                          </span>
+                        )}
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
@@ -276,11 +305,18 @@ export default function VolunteerDashboard() {
                           <span className="font-semibold text-slate-400">NGO (Dropoff):</span>{' '}
                           <span className="font-medium text-slate-700">{request.ngoName}</span>
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
                           <Navigation className="w-3.5 h-3.5 text-blue-500" />
-                          <span>Est. Route: {distance.toFixed(2)} km</span>
+                          <span>Est. Route: <strong>{distance.toFixed(2)} km</strong></span>
                         </div>
-                        <div className="col-span-1 sm:col-span-3">
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-slate-400" />
+                          <span>Safe until: <strong>{new Date(safety.safeUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong></span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-400">Freshness:</span> <strong className="text-green-700">{safety.freshnessScore}%</strong>
+                        </div>
+                        <div>
                           <span className="font-semibold text-slate-400">Address:</span> {request.address}
                         </div>
                       </div>
@@ -326,34 +362,60 @@ export default function VolunteerDashboard() {
             </div>
           ) : (
             <div className="space-y-4">
-              {myDeliveries.map((request) => (
-                <div key={request.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                  
-                  <div className="space-y-3 flex-grow">
-                    <div className="flex items-center gap-3">
-                      <h4 className="text-base font-bold text-slate-900">{request.foodName}</h4>
-                      <span className={`text-[10px] px-2.5 py-1 rounded-full border font-bold uppercase tracking-wider ${
-                        request.status === 'volunteer_assigned' ? 'bg-blue-100 text-blue-700 border-blue-200' :
-                        request.status === 'picked_up' ? 'bg-indigo-100 text-indigo-700 border-indigo-200' :
-                        'bg-green-100 text-green-700 border-green-200'
-                      }`}>
-                        {request.status.replace('_', ' ')}
-                      </span>
-                    </div>
+              {myDeliveries.map((request) => {
+                const safety = request.foodSafety || {
+                  freshnessScore: 85,
+                  safeUntil: new Date(Date.now() + 4 * 3600 * 1000).toISOString(),
+                  risk: 'Safe',
+                  pickupPriority: 'Medium',
+                  status: 'Safe'
+                };
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
-                      <div>
-                        <span className="font-semibold text-slate-400">From:</span> {request.restaurantName}
+                return (
+                  <div key={request.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    
+                    <div className="space-y-3 flex-grow">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <h4 className="text-base font-bold text-slate-900">{request.foodName}</h4>
+                        <span className={`text-[10px] px-2.5 py-1 rounded-full border font-bold uppercase tracking-wider ${
+                          request.status === 'volunteer_assigned' ? 'bg-blue-100 text-blue-700 border-blue-200' :
+                          request.status === 'picked_up' ? 'bg-indigo-100 text-indigo-700 border-indigo-200' :
+                          'bg-green-100 text-green-700 border-green-200'
+                        }`}>
+                          {request.status.replace('_', ' ')}
+                        </span>
+
+                        {/* Risk Badge */}
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${
+                          safety.risk === "Safe" ? "bg-green-50 text-green-700 border-green-200" :
+                          safety.risk === "Moderate" ? "bg-amber-50 text-amber-700 border-amber-250" :
+                          "bg-red-50 text-red-700 border-red-200"
+                        }`}>
+                          {safety.risk === "Safe" ? "🟢 Safe" :
+                           safety.risk === "Moderate" ? "🟡 Donate Soon" : "🔴 Unsafe"}
+                        </span>
                       </div>
-                      <div>
-                        <span className="font-semibold text-slate-400">To:</span> {request.ngoName}
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-slate-450" />
-                        <span className="truncate max-w-[150px]">{request.address}</span>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
+                        <div>
+                          <span className="font-semibold text-slate-400">From:</span> {request.restaurantName}
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-400">To:</span> {request.ngoName}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-slate-400" />
+                          <span>Safe until: <strong>{new Date(safety.safeUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong></span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-400">Freshness:</span> <strong className="text-green-700">{safety.freshnessScore}%</strong>
+                        </div>
+                        <div className="col-span-1 sm:col-span-2 flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-slate-450" />
+                          <span className="truncate max-w-[280px]">{request.address}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
                   <div className="flex gap-2 w-full md:w-auto">
                     <button

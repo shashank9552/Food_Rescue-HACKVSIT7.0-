@@ -68,7 +68,8 @@ export default function MatchSuggestions({ listing }) {
         volunteerId: null,
         volunteerName: null,
         status: 'claimed',
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        foodSafety: listing.foodSafety || null
       });
 
       toast.success(`Donation assigned to ${ngo.ngoName}! Volunteer courier alerted.`);
