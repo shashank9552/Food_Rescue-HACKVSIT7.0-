@@ -1,0 +1,13 @@
+{
+  "name": "seed",
+  "version": "1.0.0",
+  "description": "Seeding script dependencies for Food Rescue AI",
+  "main": "seed.js",
+  "scripts": {
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.1.0"
+  },
+  "private": true
+}
