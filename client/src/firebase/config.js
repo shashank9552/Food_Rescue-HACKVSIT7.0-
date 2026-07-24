@@ -1,11 +1,24 @@
-// TODO: Initialize the Firebase SDK configuration for the client application.
-// In the future, this file will:
-// 1. Import initializeApp from 'firebase/app' and getFirestore/getAuth/getFunctions from the Firebase SDK.
-// 2. Load configuration values from VITE_ environment variables.
-// 3. Initialize and export 'db', 'auth', and 'functions' instances.
+import { initializeApp } from 'firebase/app';
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 
-export const db = null;
-export const auth = null;
-export const functions = null;
+// Load config from Vite environment variables (from .env)
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
+};
 
-console.log("[Firebase Config] Scaffold loaded. Firebase SDK initialization is pending.");
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const functions = getFunctions(app);
+
+// In development, hook up to local emulators
+if (import.meta.env.DEV || import.meta.env.VITE_USE_EMULATORS === 'true') {
+  connectFirestoreEmulator(db, '127.0.0.1', 8080);
+  connectFunctionsEmulator(functions, '127.0.0.1', 5001);
+  console.log("[Firebase Config] Successfully connected to local Firestore and Functions emulators.");
+}
