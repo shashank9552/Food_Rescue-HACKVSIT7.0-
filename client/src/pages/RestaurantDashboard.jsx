@@ -3,6 +3,8 @@ import { useStore } from '../store/useStore';
 import DashboardLayout from '../components/DashboardLayout';
 import StatusBadge from '../components/StatusBadge';
 import { PlusCircle, Utensils, MapPin, Clock, FileText } from 'lucide-react';
+import PredictionCard from '../components/PredictionCard';
+import MatchSuggestions from '../components/MatchSuggestions';
 
 export default function RestaurantDashboard() {
   const rescueItems = useStore((state) => state.rescueItems);
@@ -67,6 +69,8 @@ export default function RestaurantDashboard() {
               </div>
             </div>
           </div>
+
+          <PredictionCard restaurantId="spice_garden" />
 
           {!showForm ? (
             <button
@@ -180,6 +184,10 @@ export default function RestaurantDashboard() {
                       <p className="text-xs text-slate-500 bg-slate-950/40 p-2.5 rounded-xl border border-slate-900/50 max-w-xl">
                         {item.description}
                       </p>
+                    )}
+
+                    {item.status === 'posted' && (
+                      <MatchSuggestions listingId={item.id} />
                     )}
                   </div>
                 </div>

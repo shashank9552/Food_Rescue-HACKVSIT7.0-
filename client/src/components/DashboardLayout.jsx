@@ -38,7 +38,7 @@ export default function DashboardLayout({ title, roleName, children }) {
               {socketConnected ? (
                 <>
                   <Wifi className="w-4 h-4 text-emerald-400" />
-                  <span className="text-xs font-semibold text-emerald-400">Socket Connected</span>
+                  <span className="text-xs font-semibold text-emerald-400">Firebase Connected</span>
                 </>
               ) : (
                 <>
