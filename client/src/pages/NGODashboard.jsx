@@ -138,12 +138,49 @@ export default function NGODashboard() {
   const totalClaimsWeight = claimedItems.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
   const totalMealsDistributed = Math.round(totalClaimsWeight * 2.5);
 
-  // Pie chart categories mock dataset
-  const categoryData = [
-    { name: 'Veg Meals', value: claimedItems.filter(c => c.foodCategory === 'Veg Meals').length || 3 },
-    { name: 'Non-Veg', value: claimedItems.filter(c => c.foodCategory === 'Non-Veg Meals').length || 1 },
-    { name: 'Bakery', value: claimedItems.filter(c => c.foodCategory === 'Bakery & Desserts').length || 2 }
-  ].filter(c => c.value > 0);
+  // Pie chart categories dataset from live claimedItems data
+  const getCategoryData = () => {
+    const counts = {};
+    claimedItems.forEach(item => {
+      const cat = item.foodCategory || 'Veg Meals';
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+
+    return Object.keys(counts).map(cat => ({
+      name: cat,
+      value: counts[cat]
+    }));
+  };
+
+  const categoryData = getCategoryData();
+
+  // Compute live cumulative distributed meals saved
+  const getCumulativeMealsData = () => {
+    const sortedClaims = [...claimedItems].sort((a, b) => {
+      const timeA = a.createdAt?.seconds || 0;
+      const timeB = b.createdAt?.seconds || 0;
+      return timeA - timeB;
+    });
+
+    let runningTotal = 0;
+    const data = sortedClaims.map(item => {
+      runningTotal += item.estimatedMeals || Math.round((item.quantity || 0) * 2.5);
+      const date = item.createdAt?.toDate ? item.createdAt.toDate() : new Date(item.createdAt);
+      return {
+        name: date.toLocaleDateString([], { month: 'short', day: 'numeric' }),
+        meals: runningTotal
+      };
+    });
+
+    if (data.length === 0) {
+      return [
+        { name: 'Start', meals: 0 }
+      ];
+    }
+    return data;
+  };
+
+  const cumulativeMealsData = getCumulativeMealsData();
 
   const COLORS = ['#16A34A', '#EF4444', '#F59E0B', '#3B82F6'];
 
@@ -407,12 +444,7 @@ export default function NGODashboard() {
               <h3 className="text-sm font-bold text-slate-800">Distributed Meals Trend</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={[
-                    { name: 'Week 1', meals: 10 },
-                    { name: 'Week 2', meals: 25 },
-                    { name: 'Week 3', meals: 48 },
-                    { name: 'Week 4', meals: totalMealsDistributed > 0 ? totalMealsDistributed : 65 }
-                  ]}>
+                  <AreaChart data={cumulativeMealsData}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                     <XAxis dataKey="name" stroke="#64748B" fontSize={12} tickLine={false} />
                     <YAxis stroke="#64748B" fontSize={12} tickLine={false} />

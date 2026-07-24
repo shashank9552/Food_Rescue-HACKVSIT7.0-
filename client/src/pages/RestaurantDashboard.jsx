@@ -145,16 +145,56 @@ export default function RestaurantDashboard() {
   const totalMealsSaved = Math.round(totalDonatedKg * 2.5);
   const totalCo2AvoidedKg = Math.round(totalDonatedKg * 2.5);
 
-  // Mock analytics history dataset
-  const analyticsData = [
-    { name: 'Mon', kg: 12 },
-    { name: 'Tue', kg: 8 },
-    { name: 'Wed', kg: 15 },
-    { name: 'Thu', kg: 10 },
-    { name: 'Fri', kg: 14 },
-    { name: 'Sat', kg: totalDonatedKg > 0 ? Math.round(totalDonatedKg) : 22 },
-    { name: 'Sun', kg: 9 }
-  ];
+  // Calculate analytics history dataset from live listings data
+  const getWeeklyDonationsData = () => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dataMap = { 'Mon': 0, 'Tue': 0, 'Wed': 0, 'Thu': 0, 'Fri': 0, 'Sat': 0, 'Sun': 0 };
+
+    listings.forEach(item => {
+      if (item.createdAt) {
+        const date = item.createdAt.toDate ? item.createdAt.toDate() : new Date(item.createdAt);
+        const dayName = days[date.getDay()];
+        if (dayName in dataMap) {
+          dataMap[dayName] += item.quantity || 0;
+        }
+      }
+    });
+
+    return Object.keys(dataMap).map(day => ({
+      name: day,
+      kg: Number(dataMap[day].toFixed(1))
+    }));
+  };
+
+  const analyticsData = getWeeklyDonationsData();
+
+  // Compute live cumulative meals data
+  const getCumulativeMealsData = () => {
+    const sortedListings = [...listings].sort((a, b) => {
+      const timeA = a.createdAt?.seconds || 0;
+      const timeB = b.createdAt?.seconds || 0;
+      return timeA - timeB;
+    });
+
+    let runningTotal = 0;
+    const data = sortedListings.map(item => {
+      runningTotal += item.estimatedMeals || Math.round((item.quantity || 0) * 2.5);
+      const date = item.createdAt?.toDate ? item.createdAt.toDate() : new Date(item.createdAt);
+      return {
+        name: date.toLocaleDateString([], { month: 'short', day: 'numeric' }),
+        meals: runningTotal
+      };
+    });
+
+    if (data.length === 0) {
+      return [
+        { name: 'Start', meals: 0 }
+      ];
+    }
+    return data;
+  };
+
+  const cumulativeMealsData = getCumulativeMealsData();
 
   return (
     <DashboardLayout title="Partner Restaurant Portal">
@@ -414,7 +454,7 @@ export default function RestaurantDashboard() {
 
                     {/* Smart matching display */}
                     {item.status === 'posted' && (
-                      <MatchSuggestions listingId={item.id} />
+                      <MatchSuggestions listing={item} />
                     )}
 
                     {item.claimedByNgoName && (
@@ -478,12 +518,7 @@ export default function RestaurantDashboard() {
               <h3 className="text-sm font-bold text-slate-800">Cumulative Meals Saved</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={[
-                    { name: 'Week 1', meals: 15 },
-                    { name: 'Week 2', meals: 42 },
-                    { name: 'Week 3', meals: 80 },
-                    { name: 'Week 4', meals: totalMealsSaved > 0 ? totalMealsSaved : 110 }
-                  ]}>
+                  <AreaChart data={cumulativeMealsData}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                     <XAxis dataKey="name" stroke="#64748B" fontSize={12} tickLine={false} />
                     <YAxis stroke="#64748B" fontSize={12} tickLine={false} />
