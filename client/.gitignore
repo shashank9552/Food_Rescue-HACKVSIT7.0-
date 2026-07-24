@@ -18,20 +18,7 @@ dist-ssr
 .idea
 .DS_Store
 *.suo
-<<<<<<< HEAD
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-=======
-*.ntvsca*
-*.njsproj
-*.sln
-*.sw?
-
-# Environment variables
-.env
-.env.production
-.env.local
-.env.*.local
->>>>>>> origin/main
