@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Firebase cache and logs
+.firebase/
+*-debug.log
+.env
+.env.*
+
+# Local service account key placeholder
+seed/serviceAccountKey.json
+serviceAccountKey.json
+
+# Firebase Emulator
+firebase/.cache/
+
+# Firebase local files
+firebase/*.log
+firebase-debug.log
