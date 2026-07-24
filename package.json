@@ -8,7 +8,7 @@
     "client:install": "cd client && npm install",
     "client:build": "cd client && npm run build",
     "firebase:install": "cd firebase/functions && npm install && cd ../seed && npm install",
-    "firebase:emulator": "cd firebase && FIREBASE_EMULATORS_PATH=\"./.cache\" PATH=\"/opt/homebrew/opt/openjdk@21/bin:$PATH\" ./functions/node_modules/.bin/firebase emulators:start --only functions,firestore",
+    "firebase:emulator": "cd firebase && FIREBASE_EMULATORS_PATH=\"./.cache\" PATH=\"/opt/homebrew/opt/openjdk@21/bin:$PATH\" ./functions/node_modules/.bin/firebase emulators:start --only auth,functions,firestore",
     "firebase:seed": "cd firebase/seed && FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 node seed.js",
     "firebase:test": "NODE_PATH=\"firebase/seed/node_modules\" node /Users/sanjanamilind/.gemini/antigravity/brain/68a9fdb8-4bde-4453-b858-117edc5aa423/scratch/test_emulator.js"
   }

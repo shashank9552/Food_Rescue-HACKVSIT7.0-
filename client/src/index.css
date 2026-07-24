@@ -6,39 +6,61 @@
 
 /* Custom Base Styles */
 body {
-  @apply bg-slate-950 text-slate-100 antialiased font-sans selection:bg-emerald-500 selection:text-slate-950 min-h-screen flex flex-col;
+  @apply bg-slate-50 text-slate-800 antialiased font-sans selection:bg-green-500 selection:text-white min-h-screen flex flex-col;
 }
 
 #root {
   @apply flex-grow flex flex-col;
 }
 
-/* Glassmorphism utility */
+/* Glassmorphism utility for light startup theme */
 .glass {
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
 }
 
 .glass-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .glass-hover:hover {
-  background: rgba(15, 23, 42, 0.8);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.8);
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-/* Custom Scrollbars */
+/* Smooth custom scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-slate-950;
+  @apply bg-slate-100;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
+  @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
+}
+
+/* Leaflet maps custom stylings to fit with Tailwind */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  z-index: 1;
+}
+
+/* Custom button states */
+.btn-primary {
+  @apply bg-green-600 hover:bg-green-500 text-white font-semibold py-2.5 px-5 rounded-xl transition-all shadow-md hover:shadow-lg shadow-green-600/10 hover:scale-[1.01] active:scale-[0.99];
+}
+
+.btn-secondary {
+  @apply bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-semibold py-2.5 px-5 rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99];
+}
+
+.btn-accent {
+  @apply bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold py-2.5 px-5 rounded-xl transition-all shadow-md hover:shadow-lg shadow-amber-500/10 hover:scale-[1.01] active:scale-[0.99];
 }
