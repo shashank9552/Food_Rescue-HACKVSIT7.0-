@@ -4,117 +4,50 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Base Styles */
 :root {
-  color-scheme: light;
+  --primary: #1E4D3D;
+  --primary-hover: #15372b;
+  --secondary: #4E6E58;
+  --secondary-hover: #3f5947;
+  --accent: #D97706;
+  --accent-hover: #b45309;
+  --background: #F5F6F8;
+  --card: #FFFFFF;
+  --text: #222222;
+  --text-secondary: #55685c;
+  --border: #DADFE5;
 }
 
+.dark {
+  --primary: #3da37f;
+  --primary-hover: #4ade80;
+  --secondary: #809c89;
+  --secondary-hover: #94af9d;
+  --accent: #fbbf24;
+  --accent-hover: #fcd34d;
+  --background: #0f172a;
+  --card: #1e293b;
+  --text: #ffffff;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+}
+
+/* Custom Base Styles */
 body {
-<<<<<<< HEAD
-  @apply bg-surface text-text antialiased font-sans selection:bg-primary selection:text-white min-h-screen flex flex-col;
+  background-color: var(--background);
+  color: var(--text);
+  @apply antialiased font-sans min-h-screen flex flex-col transition-colors duration-300;
 }
 
-.dark body {
-  background: #111924;
-  color: #F8FAFC;
-=======
-  @apply bg-slate-50 text-slate-800 antialiased font-sans selection:bg-green-500 selection:text-white min-h-screen flex flex-col;
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
+body::selection {
+  background-color: var(--primary);
+  color: #ffffff;
 }
 
 #root {
   @apply flex-grow flex flex-col;
 }
 
-<<<<<<< HEAD
-/* Glassmorphism utility for startup theme */
-.glass {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(218, 223, 229, 0.7);
-  box-shadow: 0 4px 30px rgba(30, 77, 61, 0.08);
-}
-
-.dark .glass {
-  background: rgba(23, 33, 42, 0.9);
-  border-color: rgba(81, 99, 122, 0.35);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
-}
-
-.dark [class*="bg-slate-"] {
-  background-color: #17212A !important;
-}
-
-.dark [class*="border-slate-"] {
-  border-color: #2F3B4A !important;
-}
-
-.dark .bg-white {
-  background-color: #17212A !important;
-}
-.dark .bg-slate-50 {
-  background-color: #111924 !important;
-}
-.dark .bg-slate-100 {
-  background-color: #17212A !important;
-}
-.dark .bg-slate-200 {
-  background-color: #1F2E3D !important;
-}
-.dark .border-slate-200,
-.dark .border-slate-100,
-.dark .border-slate-150,
-.dark .border-slate-300,
-.dark .border-slate-350 {
-  border-color: #2F3B4A !important;
-}
-.dark [class*="text-slate-"] {
-  color: #E2E8F0 !important;
-}
-.dark .text-slate-900,
-.dark .text-slate-800,
-.dark .text-slate-700 {
-  color: #F8FAFC !important;
-}
-.dark .text-slate-600,
-.dark .text-slate-500,
-.dark .text-slate-400 {
-  color: #A2B0BD !important;
-}
-
-.dark .text-slate-300,
-.dark .text-slate-200,
-.dark .text-slate-100,
-.dark .text-slate-50 {
- color: #94A3B8 !important;
-}
-
-.dark input,
-.dark textarea,
-.dark select,
-.dark button,
-.dark optgroup,
-.dark option {
- color: #F8FAFC !important;
-}
-
-.dark input::placeholder,
-.dark textarea::placeholder,
-.dark select::placeholder {
- color: #94A3B8 !important;
-}
-
-.dark input,
-.dark textarea,
-.dark select {
- background-color: #17212A !important;
- border-color: #2F3B4A !important;
-}
-
-.dark button {
- background-color: #1F2E3D !important;
-=======
 /* Glassmorphism utility for light startup theme */
 .glass {
   background: rgba(255, 255, 255, 0.75);
@@ -122,80 +55,28 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.dark .glass {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 }
 
 .glass-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .glass-hover:hover {
-<<<<<<< HEAD
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(255, 255, 255, 0.85);
-=======
   background: rgba(255, 255, 255, 0.9);
   border-color: rgba(255, 255, 255, 0.8);
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
   transform: translateY(-2px);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-<<<<<<< HEAD
 .dark .glass-hover:hover {
-  background: rgba(23, 33, 42, 0.95);
-  border-color: rgba(255, 255, 255, 0.14);
-}
-
-=======
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
-/* Smooth custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-<<<<<<< HEAD
-  @apply bg-surface;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-border rounded-full hover:bg-secondary;
-}
-
-.dark ::-webkit-scrollbar-track {
-  background: #131d27;
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: #425066;
-}
-
-/* Theme utility classes */
-.theme-button {
-  @apply inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-3 py-2 text-sm font-semibold text-text shadow-sm transition-colors hover:bg-surface;
-}
-
-.dark .theme-button {
-  @apply border-border-dark bg-surface-dark text-text-dark;
-}
-
-.theme-divider {
-  @apply border-border;
-}
-
-.dark .theme-divider {
-  border-color: #2F3B4A;
-}
-
-/* Custom button states */
-.btn-primary {
-  @apply bg-primary hover:bg-secondary text-white font-semibold py-2.5 px-5 rounded-xl transition-all shadow-md hover:shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.99];
-}
-
-.btn-secondary {
-  @apply bg-surface border border-border text-text font-semibold py-2.5 px-5 rounded-xl transition-all hover:bg-surface hover:border-secondary hover:text-secondary hover:scale-[1.01] active:scale-[0.99];
-}
-
-.btn-accent {
-  @apply bg-accent hover:bg-accent/90 text-white font-semibold py-2.5 px-5 rounded-xl transition-all shadow-md hover:shadow-lg shadow-accent/20 hover:scale-[1.01] active:scale-[0.99];
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* Smooth custom scrollbars */
@@ -204,16 +85,15 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-surface;
+  background-color: var(--background);
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-border rounded-full hover:bg-secondary;
-=======
-  @apply bg-slate-100;
+  background-color: var(--secondary);
+  border-radius: 9999px;
+  transition: background-color 0.2s;
 }
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary);
 }
 
 /* Leaflet maps custom stylings to fit with Tailwind */
@@ -226,25 +106,83 @@ body {
 
 /* Custom button states */
 .btn-primary {
-<<<<<<< HEAD
-  @apply bg-primary hover:bg-secondary text-white font-semibold py-2.5 px-5 rounded-xl transition-all shadow-md hover:shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.99];
+  background-color: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(1px);
 }
 
 .btn-secondary {
-  @apply bg-surface border border-border text-text font-semibold py-2.5 px-5 rounded-xl transition-all hover:bg-surface hover:border-secondary hover:text-secondary hover:scale-[1.01] active:scale-[0.99];
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-secondary:hover {
+  background-color: var(--background);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+.btn-secondary:active {
+  transform: translateY(1px);
 }
 
 .btn-accent {
-  @apply bg-accent hover:bg-accent/90 text-white font-semibold py-2.5 px-5 rounded-xl transition-all shadow-md hover:shadow-lg shadow-accent/20 hover:scale-[1.01] active:scale-[0.99];
-=======
-  @apply bg-green-600 hover:bg-green-500 text-white font-semibold py-2.5 px-5 rounded-xl transition-all shadow-md hover:shadow-lg shadow-green-600/10 hover:scale-[1.01] active:scale-[0.99];
+  background-color: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+.btn-accent:active {
+  transform: translateY(1px);
 }
 
-.btn-secondary {
-  @apply bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-semibold py-2.5 px-5 rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99];
+/* Utility overrides to dynamically match themes across standard Tailwind elements */
+.bg-white {
+  background-color: var(--card) !important;
+}
+.bg-slate-50 {
+  background-color: var(--background) !important;
+}
+.bg-slate-50\/50 {
+  background-color: rgba(var(--background), 0.5) !important;
+}
+.text-slate-900, .text-slate-850, .text-slate-800 {
+  color: var(--text) !important;
+}
+.text-slate-700, .text-slate-600, .text-slate-500 {
+  color: var(--text-secondary) !important;
+}
+.border-slate-200, .border-slate-100 {
+  border-color: var(--border) !important;
+}
+.hover\:bg-slate-50:hover {
+  background-color: var(--background) !important;
+}
+.hover\:bg-slate-100:hover {
+  background-color: var(--background) !important;
+}
+.hover\:text-slate-800:hover {
+  color: var(--text) !important;
 }
 
-.btn-accent {
-  @apply bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold py-2.5 px-5 rounded-xl transition-all shadow-md hover:shadow-lg shadow-amber-500/10 hover:scale-[1.01] active:scale-[0.99];
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
-}

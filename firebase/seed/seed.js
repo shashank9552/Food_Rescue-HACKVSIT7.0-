@@ -44,43 +44,13 @@ const ngos = [
     id: "helping_hands",
     name: "Helping Hands",
     location: { lat: 28.6470, lng: 77.2260 },
-    capacityKg: 20,
-    currentCapacity: 5,
-    maxCapacity: 25,
-    operatingHours: "9 AM - 9 PM",
-    acceptedCategories: ["Veg Meals", "Non-Veg Meals", "Dry Groceries"],
-    averagePickupTime: 18,
-    activeRequests: 1,
-    successRate: 98,
-    lastPickupTime: new Date(Date.now() - 3600000 * 2).toISOString()
+    capacityKg: 20
   },
   {
     id: "anna_seva_trust",
     name: "Anna Seva Trust",
     location: { lat: 28.6600, lng: 77.2400 },
-    capacityKg: 15,
-    currentCapacity: 10,
-    maxCapacity: 25,
-    operatingHours: "8 AM - 10 PM",
-    acceptedCategories: ["Veg Meals", "Bakery & Desserts", "Fresh Produce"],
-    averagePickupTime: 25,
-    activeRequests: 3,
-    successRate: 92,
-    lastPickupTime: new Date(Date.now() - 3600000 * 4).toISOString()
-  },
-  {
-    id: "delhi_rescue_hub",
-    name: "Delhi Food Rescue Hub",
-    location: { lat: 28.6550, lng: 77.2150 },
-    capacityKg: 40,
-    currentCapacity: 5,
-    maxCapacity: 45,
-    operatingHours: "24 Hours",
-    acceptedCategories: ["Veg Meals", "Non-Veg Meals", "Bakery & Desserts", "Dry Groceries", "Fresh Produce"],
-    averagePickupTime: 15,
-    activeRequests: 0,
-    successRate: 96,
-    lastPickupTime: new Date(Date.now() - 3600000 * 1).toISOString()
+    capacityKg: 15
   }
 ];
 
@@ -109,62 +79,6 @@ async function deleteCollection(collectionPath) {
   await batch.commit();
 }
 
-async function clearAuthUsers() {
-  try {
-    const listUsersResult = await admin.auth().listUsers();
-    const deletePromises = listUsersResult.users.map((user) =>
-      admin.auth().deleteUser(user.uid).catch(() => {})
-    );
-    await Promise.all(deletePromises);
-    console.log("Cleared existing Auth users.");
-  } catch (err) {
-    console.warn("Could not clear Auth users:", err.message);
-  }
-}
-
-async function seedAuthUsers() {
-  const mockUsers = [
-    {
-      uid: "spice_garden",
-      email: "spice_garden@foodrescue.ai",
-      password: "password123",
-      role: "restaurant"
-    },
-    {
-      uid: "helping_hands",
-      email: "helping_hands@foodrescue.ai",
-      password: "password123",
-      role: "ngo"
-    },
-    {
-      uid: "rahul",
-      email: "rahul@foodrescue.ai",
-      password: "password123",
-      role: "volunteer"
-    },
-    {
-      uid: "admin",
-      email: "admin@foodrescue.ai",
-      password: "password123",
-      role: "admin"
-    }
-  ];
-
-  for (const user of mockUsers) {
-    try {
-      await admin.auth().createUser({
-        uid: user.uid,
-        email: user.email,
-        password: user.password
-      });
-      await admin.auth().setCustomUserClaims(user.uid, { role: user.role });
-      console.log(`Seeded Auth user: ${user.email}`);
-    } catch (err) {
-      console.error(`Failed to seed Auth user ${user.email}:`, err.message);
-    }
-  }
-}
-
 async function seed() {
   try {
     console.log("Clearing existing collections...");
@@ -173,9 +87,6 @@ async function seed() {
     await deleteCollection("volunteers");
     await deleteCollection("foodListings");
     await deleteCollection("matches");
-
-    await clearAuthUsers();
-    await seedAuthUsers();
 
     console.log("Writing seed documents...");
     const batch = db.batch();

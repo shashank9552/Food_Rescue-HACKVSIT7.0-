@@ -59,25 +59,12 @@ export default function Login() {
   };
 
   return (
-<<<<<<< HEAD
-    <div className="min-h-screen bg-surface text-text flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden dark:bg-bg-dark dark:text-text-dark">
-=======
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
       {/* Dynamic graphic accents */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-green-500/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center z-10">
-<<<<<<< HEAD
-        <div className="mx-auto w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-          <span className="font-bold text-white text-xl">F</span>
-        </div>
-        <h2 className="mt-6 text-3xl font-extrabold text-text tracking-tight dark:text-text-dark">
-          {isSignUp ? "Join Food Rescue AI" : "Welcome back"}
-        </h2>
-        <p className="mt-2 text-sm text-slate-500 dark:text-text-dark/70">
-=======
         <div className="mx-auto w-12 h-12 rounded-2xl bg-gradient-to-tr from-green-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-green-600/20">
           <span className="font-bold text-white text-xl">F</span>
         </div>
@@ -85,25 +72,16 @@ export default function Login() {
           {isSignUp ? "Join Food Rescue AI" : "Welcome back"}
         </h2>
         <p className="mt-2 text-sm text-slate-500">
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
           {isSignUp ? "Create your account and start saving food" : "Access your matching dashboard"}
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10">
-<<<<<<< HEAD
-        <div className="bg-card py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-border dark:bg-surface-dark dark:border-border-dark">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            {isSignUp && (
-              <div>
-                <label className="block text-sm font-medium text-text dark:text-text-dark">Full Name</label>
-=======
         <div className="bg-white py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-slate-100">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {isSignUp && (
               <div>
                 <label className="block text-sm font-medium text-slate-700">Full Name</label>
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User className="h-4 w-4 text-slate-400" />
@@ -112,11 +90,7 @@ export default function Login() {
                     type="text"
                     placeholder="John Doe"
                     {...register('name', { required: "Name is required" })}
-<<<<<<< HEAD
-                    className="block w-full pl-10 pr-3 py-2 border border-border rounded-xl focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-text dark:bg-bg-dark dark:border-border-dark dark:text-text-dark"
-=======
                     className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-slate-900"
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
                   />
                 </div>
                 {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
@@ -124,11 +98,7 @@ export default function Login() {
             )}
 
             <div>
-<<<<<<< HEAD
-              <label className="block text-sm font-medium text-text dark:text-text-dark">Email address</label>
-=======
               <label className="block text-sm font-medium text-slate-700">Email address</label>
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-4 w-4 text-slate-400" />
@@ -143,22 +113,14 @@ export default function Login() {
                       message: "Invalid email address"
                     }
                   })}
-<<<<<<< HEAD
-                  className="block w-full pl-10 pr-3 py-2 border border-border rounded-xl focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-text dark:bg-bg-dark dark:border-border-dark dark:text-text-dark"
-=======
                   className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-slate-900"
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
                 />
               </div>
               {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
             </div>
 
             <div>
-<<<<<<< HEAD
-              <label className="block text-sm font-medium text-text dark:text-text-dark">Password</label>
-=======
               <label className="block text-sm font-medium text-slate-700">Password</label>
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-4 w-4 text-slate-400" />
@@ -173,11 +135,7 @@ export default function Login() {
                       message: "Password must be at least 6 characters"
                     }
                   })}
-<<<<<<< HEAD
-                  className="block w-full pl-10 pr-3 py-2 border border-border rounded-xl focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-text dark:bg-bg-dark dark:border-border-dark dark:text-text-dark"
-=======
                   className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-slate-900"
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
                 />
               </div>
               {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
@@ -185,11 +143,7 @@ export default function Login() {
 
             {isSignUp && (
               <div>
-<<<<<<< HEAD
-                <label className="block text-sm font-medium text-text dark:text-text-dark">Confirm Password</label>
-=======
                 <label className="block text-sm font-medium text-slate-700">Confirm Password</label>
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock className="h-4 w-4 text-slate-400" />
@@ -205,11 +159,7 @@ export default function Login() {
                         }
                       }
                     })}
-<<<<<<< HEAD
-                    className="block w-full pl-10 pr-3 py-2 border border-border rounded-xl focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-text dark:bg-bg-dark dark:border-border-dark dark:text-text-dark"
-=======
                     className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-slate-900"
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
                   />
                 </div>
                 {errors.confirmPassword && <p className="mt-1 text-xs text-red-500">{errors.confirmPassword.message}</p>}
@@ -220,11 +170,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={submitting}
-<<<<<<< HEAD
-                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors disabled:opacity-50"
-=======
                 className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors disabled:opacity-50"
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               >
                 {submitting ? (
                   <Loader className="w-5 h-5 animate-spin text-white" />
@@ -243,11 +189,7 @@ export default function Login() {
                 <div className="w-full border-t border-slate-200" />
               </div>
               <div className="relative flex justify-center text-sm">
-<<<<<<< HEAD
-                <span className="px-2 bg-card text-slate-500 dark:bg-surface-dark dark:text-text-dark/70">Or continue with</span>
-=======
                 <span className="px-2 bg-white text-slate-500">Or continue with</span>
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               </div>
             </div>
 
@@ -255,11 +197,7 @@ export default function Login() {
               <button
                 onClick={handleGoogleSignIn}
                 disabled={googleLoading}
-<<<<<<< HEAD
-                className="w-full flex justify-center items-center py-2 px-4 border border-border rounded-xl shadow-sm bg-card text-sm font-semibold text-text hover:bg-surface transition-colors disabled:opacity-50 dark:bg-surface-dark dark:border-border-dark dark:text-text-dark dark:hover:bg-bg-dark"
-=======
                 className="w-full flex justify-center items-center py-2 px-4 border border-slate-300 rounded-xl shadow-sm bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
->>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               >
                 {googleLoading ? (
                   <Loader className="w-5 h-5 animate-spin text-slate-400" />
