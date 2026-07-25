@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,6 +8,25 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: {
+          DEFAULT: 'var(--primary)',
+          hover: 'var(--primary-hover)',
+        },
+        secondary: {
+          DEFAULT: 'var(--secondary)',
+          hover: 'var(--secondary-hover)',
+        },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          hover: 'var(--accent-hover)',
+        },
+        background: 'var(--background)',
+        card: 'var(--card)',
+        text: {
+          DEFAULT: 'var(--text)',
+          secondary: 'var(--text-secondary)',
+        },
+        border: 'var(--border)',
         // Shared color system for statuses
         posted: '#9ca3af',      // Tailwind gray-400
         claimed: '#f59e0b',     // Tailwind amber-500

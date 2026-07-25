@@ -20,6 +20,7 @@ import {
   Wifi,
   WifiOff
 } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 export default function DashboardLayout({ title, children }) {
   const { userProfile, logout } = useAuth();
@@ -40,7 +41,7 @@ export default function DashboardLayout({ title, children }) {
         { name: 'Dashboard', path: '/restaurant', icon: LayoutDashboard },
         { name: 'Add Food Offer', path: '/restaurant?tab=add-food', icon: PlusCircle },
         { name: 'My Listings', path: '/restaurant?tab=my-listings', icon: ClipboardList },
-        { name: 'Impact Analytics', path: '/analytics', icon: BarChart3 }
+        { name: 'Analytics', path: '/restaurant?tab=analytics', icon: BarChart3 }
       ]
     },
     ngo: {
@@ -51,7 +52,7 @@ export default function DashboardLayout({ title, children }) {
         { name: 'Dashboard', path: '/ngo', icon: LayoutDashboard },
         { name: 'Nearby Offers', path: '/ngo?tab=nearby', icon: Map },
         { name: 'Accepted Claims', path: '/ngo?tab=claims', icon: ClipboardList },
-        { name: 'Impact Analytics', path: '/analytics', icon: BarChart3 }
+        { name: 'Analytics', path: '/ngo?tab=analytics', icon: BarChart3 }
       ]
     },
     volunteer: {
@@ -61,8 +62,7 @@ export default function DashboardLayout({ title, children }) {
       links: [
         { name: 'Dashboard', path: '/volunteer', icon: LayoutDashboard },
         { name: 'Nearby Pickups', path: '/volunteer?tab=pickups', icon: Map },
-        { name: 'My Deliveries', path: '/volunteer?tab=deliveries', icon: ClipboardList },
-        { name: 'Impact Analytics', path: '/analytics', icon: BarChart3 }
+        { name: 'My Deliveries', path: '/volunteer?tab=deliveries', icon: ClipboardList }
       ]
     },
     admin: {
@@ -72,8 +72,7 @@ export default function DashboardLayout({ title, children }) {
       links: [
         { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
         { name: 'Manage Users', path: '/admin?tab=users', icon: Users },
-        { name: 'Active Listings', path: '/admin?tab=listings', icon: ClipboardList },
-        { name: 'Impact Analytics', path: '/analytics', icon: BarChart3 }
+        { name: 'Active Listings', path: '/admin?tab=listings', icon: ClipboardList }
       ]
     }
   };
@@ -100,21 +99,24 @@ export default function DashboardLayout({ title, children }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-slate-50 text-slate-800">
+    <div className="min-h-screen flex flex-col md:flex-row bg-background text-text transition-colors duration-300">
       {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between px-5 py-4 bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+      <header className="md:hidden flex items-center justify-between px-5 py-4 bg-background border-b border-border sticky top-0 z-50 shadow-sm transition-colors duration-300">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-green-600 to-emerald-400 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary to-emerald-400 flex items-center justify-center">
             <span className="font-bold text-white text-base">F</span>
           </div>
-          <h1 className="font-extrabold text-slate-900 tracking-tight text-md">Food Rescue AI</h1>
+          <h1 className="font-extrabold text-text tracking-tight text-md">Food Rescue AI</h1>
         </div>
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-1.5 border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50"
-        >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="flex items-center gap-2.5">
+          <ThemeToggle className="scale-90" />
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-1.5 border border-border rounded-xl text-text-secondary hover:bg-background transition-all active:scale-95"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </header>
 
       {/* Sidebar - Desktop & Mobile overlay */}
@@ -209,13 +211,16 @@ export default function DashboardLayout({ title, children }) {
       {/* Main Content Area */}
       <div className="flex-grow flex flex-col min-h-screen overflow-hidden">
         {/* Desktop Header */}
-        <header className="hidden md:flex items-center justify-between px-8 py-5 bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30">
-          <h2 className="text-lg font-bold text-slate-800">{title}</h2>
-          <div className="flex items-center gap-2">
-            <span className={`w-2 h-2 rounded-full ${socketConnected ? 'bg-green-500 animate-pulse' : 'bg-amber-500'}`} />
-            <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
-              {socketConnected ? 'Real-Time Sync Active' : 'Offline / Mock Server'}
-            </span>
+        <header className="hidden md:flex items-center justify-between px-8 py-5 bg-background border-b border-border shadow-sm sticky top-0 z-30 transition-colors duration-300">
+          <h2 className="text-lg font-bold text-text">{title}</h2>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${socketConnected ? 'bg-green-500 animate-pulse' : 'bg-amber-500'}`} />
+              <span className="text-xs text-text-secondary font-semibold uppercase tracking-wider">
+                {socketConnected ? 'Real-Time Sync Active' : 'Offline / Mock Server'}
+              </span>
+            </div>
           </div>
         </header>
 

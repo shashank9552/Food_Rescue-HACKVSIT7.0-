@@ -13,6 +13,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export default function Landing() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-[150px] pointer-events-none" />
 
       {/* Navigation */}
-      <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between border-b border-slate-200 bg-white/70 backdrop-blur-md sticky top-0 z-50">
+      <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between border-b border-border bg-background sticky top-0 z-50 transition-colors duration-300">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-green-600 to-emerald-400 flex items-center justify-center shadow-md shadow-green-600/20">
             <span className="font-extrabold text-white text-lg">F</span>
@@ -71,6 +72,7 @@ export default function Landing() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           {user ? (
             <button 
               onClick={() => navigate('/select-role')}

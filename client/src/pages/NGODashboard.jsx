@@ -112,8 +112,7 @@ export default function NGODashboard() {
         volunteerId: null,
         volunteerName: null,
         status: 'claimed',
-        createdAt: serverTimestamp(),
-        foodSafety: item.foodSafety || null
+        createdAt: serverTimestamp()
       });
 
       toast.success("Donation claimed! Courier route generated.");
@@ -139,49 +138,12 @@ export default function NGODashboard() {
   const totalClaimsWeight = claimedItems.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
   const totalMealsDistributed = Math.round(totalClaimsWeight * 2.5);
 
-  // Pie chart categories dataset from live claimedItems data
-  const getCategoryData = () => {
-    const counts = {};
-    claimedItems.forEach(item => {
-      const cat = item.foodCategory || 'Veg Meals';
-      counts[cat] = (counts[cat] || 0) + 1;
-    });
-
-    return Object.keys(counts).map(cat => ({
-      name: cat,
-      value: counts[cat]
-    }));
-  };
-
-  const categoryData = getCategoryData();
-
-  // Compute live cumulative distributed meals saved
-  const getCumulativeMealsData = () => {
-    const sortedClaims = [...claimedItems].sort((a, b) => {
-      const timeA = a.createdAt?.seconds || 0;
-      const timeB = b.createdAt?.seconds || 0;
-      return timeA - timeB;
-    });
-
-    let runningTotal = 0;
-    const data = sortedClaims.map(item => {
-      runningTotal += item.estimatedMeals || Math.round((item.quantity || 0) * 2.5);
-      const date = item.createdAt?.toDate ? item.createdAt.toDate() : new Date(item.createdAt);
-      return {
-        name: date.toLocaleDateString([], { month: 'short', day: 'numeric' }),
-        meals: runningTotal
-      };
-    });
-
-    if (data.length === 0) {
-      return [
-        { name: 'Start', meals: 0 }
-      ];
-    }
-    return data;
-  };
-
-  const cumulativeMealsData = getCumulativeMealsData();
+  // Pie chart categories mock dataset
+  const categoryData = [
+    { name: 'Veg Meals', value: claimedItems.filter(c => c.foodCategory === 'Veg Meals').length || 3 },
+    { name: 'Non-Veg', value: claimedItems.filter(c => c.foodCategory === 'Non-Veg Meals').length || 1 },
+    { name: 'Bakery', value: claimedItems.filter(c => c.foodCategory === 'Bakery & Desserts').length || 2 }
+  ].filter(c => c.value > 0);
 
   const COLORS = ['#16A34A', '#EF4444', '#F59E0B', '#3B82F6'];
 
@@ -314,75 +276,45 @@ export default function NGODashboard() {
             </div>
           ) : (
             <div className="space-y-4">
-              {availableItems.map((item) => {
-                const safety = item.foodSafety || {
-                  freshnessScore: 85,
-                  safeUntil: new Date(Date.now() + (item.expiryTime || 4) * 3600 * 1000).toISOString(),
-                  risk: 'Safe',
-                  pickupPriority: 'Medium',
-                  status: 'Safe'
-                };
+              {availableItems.map((item) => (
+                <div key={item.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                  
+                  <div className="space-y-3 flex-grow">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h4 className="text-base font-bold text-slate-900">{item.foodName}</h4>
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                        {item.foodCategory}
+                      </span>
+                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 flex items-center gap-1 shadow-sm">
+                        <Sparkles className="w-3.5 h-3.5 text-green-600" />
+                        <span>{item.matchScore}% Match Score</span>
+                      </span>
+                    </div>
 
-                return (
-                  <div key={item.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    
-                    <div className="space-y-3 flex-grow">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h4 className="text-base font-bold text-slate-900">{item.foodName}</h4>
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-                          {item.foodCategory}
-                        </span>
-                        <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 flex items-center gap-1 shadow-sm">
-                          <Sparkles className="w-3.5 h-3.5 text-green-600" />
-                          <span>{item.matchScore}% Match Score</span>
-                        </span>
-                        
-                        {/* Risk Badge */}
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${
-                          safety.risk === "Safe" ? "bg-green-50 text-green-700 border-green-200" :
-                          safety.risk === "Moderate" ? "bg-amber-50 text-amber-700 border-amber-250" :
-                          "bg-red-50 text-red-700 border-red-200"
-                        }`}>
-                          {safety.risk === "Safe" ? "🟢 Safe" :
-                           safety.risk === "Moderate" ? "🟡 Donate Soon" : "🔴 Unsafe"}
-                        </span>
-
-                        {/* Urgency Badge */}
-                        {safety.pickupPriority && safety.pickupPriority !== 'None' && (
-                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${
-                            safety.pickupPriority === "Urgent" ? "bg-red-50 text-red-700 border-red-200 animate-pulse" :
-                            safety.pickupPriority === "High" ? "bg-orange-50 text-orange-700 border-orange-200" :
-                            "bg-slate-50 text-slate-600 border-slate-200"
-                          }`}>
-                            Priority: {safety.pickupPriority}
-                          </span>
-                        )}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
+                      <div>
+                        <span className="font-semibold text-slate-400">Establishment:</span>{' '}
+                        <span className="font-medium text-slate-700">{item.restaurantName}</span>
                       </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
-                        <div>
-                          <span className="font-semibold text-slate-400">Establishment:</span>{' '}
-                          <span className="font-medium text-slate-700">{item.restaurantName}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                          <span>{item.distance.toFixed(2)} km away</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-slate-400" />
-                          <span>Safe until: <strong>{new Date(safety.safeUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong></span>
-                        </div>
-                        <div>
-                          <span className="font-semibold text-slate-400">Weight:</span> {item.quantity} kg
-                        </div>
-                        <div>
-                          <span className="font-semibold text-slate-400">Freshness Index:</span> <strong className="text-green-700">{safety.freshnessScore}%</strong>
-                        </div>
-                        <div>
-                          <span className="font-semibold text-slate-400">Pickup window:</span> {item.pickupWindow}
-                        </div>
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                        <span>{item.distance.toFixed(2)} km away</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Expires in {item.expiryTime} hours</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-slate-400">Weight:</span> {item.quantity} kg
+                      </div>
+                      <div>
+                        <span className="font-semibold text-slate-400">Est. Meals:</span> {item.estimatedMeals} meals
+                      </div>
+                      <div>
+                        <span className="font-semibold text-slate-400">Pickup window:</span> {item.pickupWindow}
                       </div>
                     </div>
+                  </div>
 
                   <button
                     onClick={() => handleClaim(item)}
@@ -475,7 +407,12 @@ export default function NGODashboard() {
               <h3 className="text-sm font-bold text-slate-800">Distributed Meals Trend</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={cumulativeMealsData}>
+                  <AreaChart data={[
+                    { name: 'Week 1', meals: 10 },
+                    { name: 'Week 2', meals: 25 },
+                    { name: 'Week 3', meals: 48 },
+                    { name: 'Week 4', meals: totalMealsDistributed > 0 ? totalMealsDistributed : 65 }
+                  ]}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                     <XAxis dataKey="name" stroke="#64748B" fontSize={12} tickLine={false} />
                     <YAxis stroke="#64748B" fontSize={12} tickLine={false} />
