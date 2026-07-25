@@ -13,7 +13,10 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+<<<<<<< HEAD
 import ThemeToggle from '../components/ThemeToggle';
+=======
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -55,18 +58,27 @@ export default function Landing() {
   ];
 
   return (
+<<<<<<< HEAD
     <div className="relative min-h-screen bg-surface text-text flex flex-col justify-between overflow-x-hidden dark:bg-bg-dark dark:text-text-dark">
+=======
+    <div className="relative min-h-screen bg-slate-50 text-slate-850 flex flex-col justify-between overflow-x-hidden">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
       {/* Decorative Blur Orbs */}
       <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-green-500/10 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-[150px] pointer-events-none" />
 
       {/* Navigation */}
+<<<<<<< HEAD
       <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50 dark:bg-surface-dark/95 dark:border-border-dark">
+=======
+      <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between border-b border-slate-200 bg-white/70 backdrop-blur-md sticky top-0 z-50">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-green-600 to-emerald-400 flex items-center justify-center shadow-md shadow-green-600/20">
             <span className="font-extrabold text-white text-lg">F</span>
           </div>
           <div>
+<<<<<<< HEAD
             <h1 className="font-extrabold text-text tracking-tight text-base dark:text-text-dark">Food Rescue <span className="text-primary">AI</span></h1>
             <p className="text-[9px] text-slate-400 tracking-wider uppercase font-semibold dark:text-text-dark/70">Hackathon Edition</p>
           </div>
@@ -77,6 +89,17 @@ export default function Landing() {
             <button 
               onClick={() => navigate('/select-role')}
               className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold hover:bg-secondary shadow-md shadow-primary/15 transition-all flex items-center gap-1"
+=======
+            <h1 className="font-extrabold text-slate-900 tracking-tight text-base">Food Rescue <span className="text-green-600">AI</span></h1>
+            <p className="text-[9px] text-slate-400 tracking-wider uppercase font-semibold">Hackathon Edition</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          {user ? (
+            <button 
+              onClick={() => navigate('/select-role')}
+              className="px-4 py-2 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-500 shadow-md shadow-green-600/10 transition-all flex items-center gap-1"
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
             >
               <span>Go to Dashboard</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -84,7 +107,11 @@ export default function Landing() {
           ) : (
             <button 
               onClick={() => navigate('/login')}
+<<<<<<< HEAD
               className="px-4 py-2 border border-border text-text rounded-xl text-xs font-bold hover:bg-surface hover:text-text transition-all dark:border-border-dark dark:text-text-dark"
+=======
+              className="px-4 py-2 border border-slate-350 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-100 hover:text-slate-900 transition-all"
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
             >
               Partner Sign In
             </button>
@@ -102,12 +129,20 @@ export default function Landing() {
             <span>Reducing Food Waste dynamically</span>
           </span>
           
+<<<<<<< HEAD
           <h2 className="text-4xl md:text-6xl font-extrabold text-text leading-tight dark:text-text-dark">
+=======
+          <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
             Save Food.<br />
             <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">Feed People.</span>
           </h2>
           
+<<<<<<< HEAD
           <p className="text-slate-500 text-base md:text-lg leading-relaxed dark:text-text-dark/80">
+=======
+          <p className="text-slate-500 text-base md:text-lg leading-relaxed">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
             Every day, restaurants waste thousands of meals while people go hungry. **Food Rescue AI** bridges that gap by intelligently connecting excess supply to neighborhood distribution hubs in real-time.
           </p>
 
@@ -121,14 +156,22 @@ export default function Landing() {
             </button>
             <button
               onClick={() => handleCTA('ngo')}
+<<<<<<< HEAD
               className="flex items-center justify-center gap-2 bg-card border border-border text-text hover:bg-surface py-3.5 px-6 rounded-xl font-bold text-sm shadow-sm transition-all dark:bg-surface-dark dark:border-border-dark dark:text-text-dark dark:hover:bg-bg-dark"
+=======
+              className="flex items-center justify-center gap-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 py-3.5 px-6 rounded-xl font-bold text-sm shadow-sm transition-all"
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
             >
               <span>Join as NGO</span>
               <ChevronRight className="w-4 h-4" />
             </button>
             <button
               onClick={() => handleCTA('volunteer')}
+<<<<<<< HEAD
               className="flex items-center justify-center gap-2 bg-accent text-white hover:bg-accent/90 py-3.5 px-6 rounded-xl font-bold text-sm shadow-md shadow-accent/20 transition-all"
+=======
+              className="flex items-center justify-center gap-2 bg-amber-500 text-slate-950 hover:bg-amber-400 py-3.5 px-6 rounded-xl font-bold text-sm shadow-md shadow-amber-500/10 transition-all"
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
             >
               <span>Become Volunteer</span>
               <ChevronRight className="w-4 h-4" />
@@ -138,13 +181,18 @@ export default function Landing() {
 
         {/* Right Hero Block (Vibrant CSS Graphic illustration) */}
         <div className="lg:col-span-6 relative flex justify-center">
+<<<<<<< HEAD
           <div className="w-full max-w-md h-[380px] bg-gradient-to-tr from-primary/20 to-secondary/10 rounded-3xl border border-border p-8 shadow-xl flex flex-col justify-between relative overflow-hidden glass animate-fadeIn dark:border-border-dark">
+=======
+          <div className="w-full max-w-md h-[380px] bg-gradient-to-tr from-green-500/20 to-emerald-500/5 rounded-3xl border border-slate-200 p-8 shadow-xl flex flex-col justify-between relative overflow-hidden glass animate-fadeIn">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
             {/* Ambient visual overlay elements */}
             <div className="absolute top-0 right-0 w-24 h-24 bg-green-600/10 rounded-full blur-2xl" />
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl" />
             
             <div className="space-y-4">
               <div className="flex items-center gap-3">
+<<<<<<< HEAD
                 <div className="w-10 h-10 rounded-xl bg-card shadow-md flex items-center justify-center text-primary dark:bg-surface-dark">
                   <Building2 className="w-5 h-5" />
                 </div>
@@ -154,6 +202,17 @@ export default function Landing() {
                 </div>
                 <div className="w-8 h-px bg-border border-dashed dark:bg-border-dark" />
                 <div className="w-10 h-10 rounded-xl bg-card shadow-md flex items-center justify-center text-amber-600 dark:bg-surface-dark">
+=======
+                <div className="w-10 h-10 rounded-xl bg-white shadow-md flex items-center justify-center text-green-600">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div className="w-8 h-px bg-slate-300 border-dashed" />
+                <div className="w-10 h-10 rounded-xl bg-white shadow-md flex items-center justify-center text-blue-600">
+                  <Truck className="w-5 h-5" />
+                </div>
+                <div className="w-8 h-px bg-slate-300 border-dashed" />
+                <div className="w-10 h-10 rounded-xl bg-white shadow-md flex items-center justify-center text-amber-600">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
                   <HeartHandshake className="w-5 h-5" />
                 </div>
               </div>
@@ -176,13 +235,21 @@ export default function Landing() {
       </main>
 
       {/* Impact Counter Section */}
+<<<<<<< HEAD
       <section className="bg-surface border-y border-border py-12 dark:bg-bg-dark dark:border-border-dark">
+=======
+      <section className="bg-white border-y border-slate-200 py-12">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
           <div className="space-y-2">
             <h3 className="text-4xl md:text-5xl font-extrabold text-green-600">12,450 kg</h3>
             <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Surplus Food Rescued</p>
           </div>
+<<<<<<< HEAD
           <div className="space-y-2 border-y sm:border-y-0 sm:border-x border-border py-6 sm:py-0 dark:border-border-dark">
+=======
+          <div className="space-y-2 border-y sm:border-y-0 sm:border-x border-slate-100 py-6 sm:py-0">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
             <h3 className="text-4xl md:text-5xl font-extrabold text-slate-900">31,125</h3>
             <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Meals Provided to NGOs</p>
           </div>
@@ -218,7 +285,11 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
+<<<<<<< HEAD
       <section className="bg-surface/70 border-y border-border py-20 dark:bg-bg-dark/80 dark:border-border-dark">
+=======
+      <section className="bg-slate-100/50 border-y border-slate-200 py-20">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-xl mx-auto mb-16 space-y-4">
             <h2 className="text-3xl font-extrabold text-slate-900">Platform Features</h2>
@@ -227,29 +298,53 @@ export default function Landing() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+<<<<<<< HEAD
             <div className="bg-card p-8 rounded-2xl border border-border shadow-sm space-y-3 dark:bg-surface-dark dark:border-border-dark">
               <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600 mb-4 dark:bg-primary/10 dark:text-primary">
                 <TrendingUp className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-text text-base dark:text-text-dark">Surplus Waste Forecasting</h3>
+=======
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+              <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600 mb-4">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-slate-800 text-base">Surplus Waste Forecasting</h3>
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               <p className="text-xs text-slate-500 leading-relaxed">
                 Utilize heuristic analytics models to forecast weekly surpluses. Get proactive alerts to reduce cooking volumes and save costs.
               </p>
             </div>
+<<<<<<< HEAD
             <div className="bg-card p-8 rounded-2xl border border-border shadow-sm space-y-3 dark:bg-surface-dark dark:border-border-dark">
               <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-500 mb-4 dark:bg-accent/15 dark:text-accent">
                 <Award className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-text text-base dark:text-text-dark">Smart Priority Score</h3>
+=======
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+              <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-500 mb-4">
+                <Award className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-slate-800 text-base">Smart Priority Score</h3>
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               <p className="text-xs text-slate-500 leading-relaxed">
                 Auto-matches listings with the nearest eligible NGO based on capacity, distance weights, and food expiration windows.
               </p>
             </div>
+<<<<<<< HEAD
             <div className="bg-card p-8 rounded-2xl border border-border shadow-sm space-y-3 dark:bg-surface-dark dark:border-border-dark">
               <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 mb-4 dark:bg-secondary/15 dark:text-secondary">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-text text-base dark:text-text-dark">Impact Analytics Reporting</h3>
+=======
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+              <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 mb-4">
+                <CheckCircle2 className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-slate-800 text-base">Impact Analytics Reporting</h3>
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               <p className="text-xs text-slate-500 leading-relaxed">
                 Track meals served and aggregate carbon emissions avoided. Export metrics directly for corporate sustainability profiles.
               </p>
@@ -267,8 +362,13 @@ export default function Landing() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+<<<<<<< HEAD
           <div className="bg-card p-8 rounded-2xl border border-border shadow-sm relative dark:bg-surface-dark dark:border-border-dark">
             <p className="text-sm italic text-slate-600 leading-relaxed mb-6 dark:text-text-dark/70">
+=======
+          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
+            <p className="text-sm italic text-slate-600 leading-relaxed mb-6">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               "We used to throw away kilograms of fresh breads and dishes every Friday night. Now, with Food Rescue AI, volunteers collect the packages within 40 minutes, and the food goes directly to families in need."
             </p>
             <div>
@@ -276,8 +376,13 @@ export default function Landing() {
               <p className="text-xs text-slate-400">La Piazza Trattoria</p>
             </div>
           </div>
+<<<<<<< HEAD
           <div className="bg-card p-8 rounded-2xl border border-border shadow-sm relative dark:bg-surface-dark dark:border-border-dark">
             <p className="text-sm italic text-slate-600 leading-relaxed mb-6 dark:text-text-dark/70">
+=======
+          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
+            <p className="text-sm italic text-slate-600 leading-relaxed mb-6">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
               "Matching logic automatically prioritizes listings according to our capacity. Since it manages pickup coordination directly, our staff can spend more time distributing meals rather than planning schedules."
             </p>
             <div>
@@ -289,7 +394,11 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
+<<<<<<< HEAD
       <footer className="w-full max-w-7xl mx-auto px-6 py-8 text-center text-xs text-slate-400 border-t border-border bg-card dark:border-border-dark dark:bg-surface-dark dark:text-text-dark">
+=======
+      <footer className="w-full max-w-7xl mx-auto px-6 py-8 text-center text-xs text-slate-400 border-t border-slate-200 bg-white">
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
         <p>&copy; 2026 Food Rescue AI. Open-source demo under MIT License.</p>
       </footer>
     </div>

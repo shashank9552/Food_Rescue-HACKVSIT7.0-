@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useEffect } from 'react';
+=======
+import React, { useEffect, useState } from 'react';
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -24,6 +28,43 @@ export default function MapComponent({
   listings = [],
   activeRoute = null // { origin: {lat, lng}, destination: {lat, lng} }
 }) {
+<<<<<<< HEAD
+=======
+  const [routeCoords, setRouteCoords] = useState([]);
+
+  useEffect(() => {
+    if (activeRoute && activeRoute.origin && activeRoute.destination) {
+      const fetchOSRMRoute = async () => {
+        try {
+          const res = await fetch(
+            `https://router.project-osrm.org/route/v1/driving/${activeRoute.origin.lng},${activeRoute.origin.lat};${activeRoute.destination.lng},${activeRoute.destination.lat}?overview=full&geometries=geojson`
+          );
+          const data = await res.json();
+          if (data.routes && data.routes.length > 0) {
+            // Convert OSRM's [lng, lat] coordinate points to Leaflet's [lat, lng]
+            const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+            setRouteCoords(coords);
+          } else {
+            // Fallback
+            setRouteCoords([
+              [activeRoute.origin.lat, activeRoute.origin.lng],
+              [activeRoute.destination.lat, activeRoute.destination.lng]
+            ]);
+          }
+        } catch (err) {
+          console.error("OSRM street routing failed, falling back to straight line: ", err);
+          setRouteCoords([
+            [activeRoute.origin.lat, activeRoute.origin.lng],
+            [activeRoute.destination.lat, activeRoute.destination.lng]
+          ]);
+        }
+      };
+      fetchOSRMRoute();
+    } else {
+      setRouteCoords([]);
+    }
+  }, [activeRoute]);
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
 
   // SVG-based DivIcons for custom marker aesthetics
   const createCustomIcon = (color, htmlSvg) => {
@@ -138,14 +179,23 @@ export default function MapComponent({
               </Popup>
             </Marker>
             <Polyline 
+<<<<<<< HEAD
               positions={[
+=======
+              positions={routeCoords.length > 0 ? routeCoords : [
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
                 [activeRoute.origin.lat, activeRoute.origin.lng],
                 [activeRoute.destination.lat, activeRoute.destination.lng]
               ]} 
               color="#2563EB" 
+<<<<<<< HEAD
               weight={4}
               dashArray="8, 8"
               opacity={0.8}
+=======
+              weight={5}
+              opacity={0.85}
+>>>>>>> 9a74e11d825d21c4ff32d83be61f7c0550c74b1c
             />
           </>
         )}

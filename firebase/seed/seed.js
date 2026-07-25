@@ -44,13 +44,43 @@ const ngos = [
     id: "helping_hands",
     name: "Helping Hands",
     location: { lat: 28.6470, lng: 77.2260 },
-    capacityKg: 20
+    capacityKg: 20,
+    currentCapacity: 5,
+    maxCapacity: 25,
+    operatingHours: "9 AM - 9 PM",
+    acceptedCategories: ["Veg Meals", "Non-Veg Meals", "Dry Groceries"],
+    averagePickupTime: 18,
+    activeRequests: 1,
+    successRate: 98,
+    lastPickupTime: new Date(Date.now() - 3600000 * 2).toISOString()
   },
   {
     id: "anna_seva_trust",
     name: "Anna Seva Trust",
     location: { lat: 28.6600, lng: 77.2400 },
-    capacityKg: 15
+    capacityKg: 15,
+    currentCapacity: 10,
+    maxCapacity: 25,
+    operatingHours: "8 AM - 10 PM",
+    acceptedCategories: ["Veg Meals", "Bakery & Desserts", "Fresh Produce"],
+    averagePickupTime: 25,
+    activeRequests: 3,
+    successRate: 92,
+    lastPickupTime: new Date(Date.now() - 3600000 * 4).toISOString()
+  },
+  {
+    id: "delhi_rescue_hub",
+    name: "Delhi Food Rescue Hub",
+    location: { lat: 28.6550, lng: 77.2150 },
+    capacityKg: 40,
+    currentCapacity: 5,
+    maxCapacity: 45,
+    operatingHours: "24 Hours",
+    acceptedCategories: ["Veg Meals", "Non-Veg Meals", "Bakery & Desserts", "Dry Groceries", "Fresh Produce"],
+    averagePickupTime: 15,
+    activeRequests: 0,
+    successRate: 96,
+    lastPickupTime: new Date(Date.now() - 3600000 * 1).toISOString()
   }
 ];
 
