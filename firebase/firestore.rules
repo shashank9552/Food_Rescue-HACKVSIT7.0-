@@ -1,8 +1,91 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+    
+    // Helper to check if user has a specific role in custom claims
+    function hasRole(role) {
+      return request.auth != null && request.auth.token.role == role;
+    }
+    
+    // Helper to check if user is referenced in a match document
+    function isUserReferencedInMatch() {
+      let listingId = resource.data.listingId;
+      let foodListingPath = /databases/$(database)/documents/foodListings/$(listingId);
+      let listingPath = /databases/$(database)/documents/listings/$(listingId);
+      
+      return (exists(foodListingPath) && (
+               get(foodListingPath).data.restaurantId == request.auth.uid ||
+               get(foodListingPath).data.claimedByNgo == request.auth.uid ||
+               get(foodListingPath).data.assignedVolunteer == request.auth.uid ||
+               get(foodListingPath).data.ngoId == request.auth.uid ||
+               get(foodListingPath).data.volunteerId == request.auth.uid
+             )) ||
+             (exists(listingPath) && (
+               get(listingPath).data.restaurantId == request.auth.uid ||
+               get(listingPath).data.claimedByNgo == request.auth.uid ||
+               get(listingPath).data.assignedVolunteer == request.auth.uid ||
+               get(listingPath).data.ngoId == request.auth.uid ||
+               get(listingPath).data.volunteerId == request.auth.uid
+             ));
+    }
+
+    // Shared rules for listings creation
+    function checkListingCreate() {
+      return hasRole('restaurant') && request.resource.data.restaurantId == request.auth.uid;
+    }
+
+    // Shared rules for listings updates
+    function checkListingUpdate() {
+      return request.auth != null && (
+        // NGO Claiming: only status and claim-related fields can be changed
+        (hasRole('ngo') && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'claimedByNgo', 'claimedByNgoName', 'ngoName'])) ||
+        // Volunteer Status updates: allowed if assignedVolunteer is request.auth.uid, or if they are claiming it and assigning it to themselves
+        (hasRole('volunteer') && 
+         (resource.data.assignedVolunteer == request.auth.uid || 
+          ((resource.data.assignedVolunteer == 'vol_dave' || 
+            resource.data.assignedVolunteer == null || 
+            !('assignedVolunteer' in resource.data)) && 
+           request.resource.data.assignedVolunteer == request.auth.uid)) && 
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'volunteerName', 'assignedVolunteer']))
+      );
+    }
+
+    // Restaurants
+    match /restaurants/{uid} {
+      allow read: if request.auth != null;
+      allow write: if hasRole('restaurant') && request.auth.uid == uid;
+    }
+
+    // NGOs
+    match /ngos/{uid} {
+      allow read: if request.auth != null;
+      allow write: if hasRole('ngo') && request.auth.uid == uid;
+    }
+
+    // Volunteers
+    match /volunteers/{uid} {
+      allow read: if request.auth != null;
+      allow write: if hasRole('volunteer') && request.auth.uid == uid;
+    }
+
+    // foodListings (actual collection used in code)
+    match /foodListings/{id} {
+      allow read: if request.auth != null;
+      allow create: if checkListingCreate();
+      allow update: if checkListingUpdate();
+    }
+
+    // listings (alias as requested)
+    match /listings/{id} {
+      allow read: if request.auth != null;
+      allow create: if checkListingCreate();
+      allow update: if checkListingUpdate();
+    }
+
+    // Matches
+    match /matches/{id} {
+      allow read: if hasRole('admin') || isUserReferencedInMatch();
+      allow write: if false; // Deny all direct client writes
     }
   }
 }

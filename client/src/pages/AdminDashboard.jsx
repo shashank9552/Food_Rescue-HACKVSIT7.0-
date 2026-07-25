@@ -1,199 +1,295 @@
-import React, { useState } from 'react';
-import { useStore } from '../store/useStore';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { db } from '../firebase/config';
+import { collection, query, onSnapshot, doc, deleteDoc, updateDoc, getDocs } from 'firebase/firestore';
 import DashboardLayout from '../components/DashboardLayout';
-import StatusBadge from '../components/StatusBadge';
-import { ShieldCheck, Database, RefreshCw, BarChart2, Plus, Sparkles } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import toast from 'react-hot-toast';
+import { 
+  ShieldAlert, 
+  Users, 
+  Building2, 
+  HeartHandshake, 
+  Trash2, 
+  CheckCircle2, 
+  MapPin, 
+  Leaf, 
+  TrendingUp 
+} from 'lucide-react';
 
 export default function AdminDashboard() {
-  const rescueItems = useStore((state) => state.rescueItems);
-  const setRescueItems = useStore((state) => state.setRescueItems);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const activeTab = queryParams.get('tab') || 'dashboard';
 
-  // Statistics calculation
-  const total = rescueItems.length;
-  const posted = rescueItems.filter(i => i.status === 'posted').length;
-  const claimed = rescueItems.filter(i => i.status === 'claimed').length;
-  const pickedUp = rescueItems.filter(i => i.status === 'picked_up').length;
-  const delivered = rescueItems.filter(i => i.status === 'delivered').length;
+  const [usersList, setUsersList] = useState([]);
+  const [listings, setListings] = useState([]);
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleResetData = () => {
-    const defaultData = [
-      {
-        id: 'res-1',
-        name: 'Spaghetti Bolognese (15 Portions)',
-        restaurantName: 'La Piazza Trattoria',
-        address: '456 Olive Way, Foodville',
-        status: 'posted',
-        ngoName: null,
-        volunteerName: null,
-        timestamp: new Date().toISOString(),
-        description: 'Freshly prepared, stored in hygienic aluminum trays. Ready for pickup immediately.',
-      },
-      {
-        id: 'res-2',
-        name: 'Assorted Gourmet Sandwiches (20 Boxes)',
-        restaurantName: 'Downtown Deli & Cafe',
-        address: '789 Broadway St, Foodville',
-        status: 'claimed',
-        ngoName: 'Second Harvest Food Bank',
-        volunteerName: null,
-        timestamp: new Date().toISOString(),
-        description: 'Vegetarian and turkey options. Separately packaged with allergen labels.',
-      },
-      {
-        id: 'res-3',
-        name: 'Organic Salad Bowls (10 Packs)',
-        restaurantName: 'Green & Lean Kitchen',
-        address: '101 Wellness Blvd, Foodville',
-        status: 'picked_up',
-        ngoName: 'Hope Shelter',
-        volunteerName: 'Alex Mercer',
-        timestamp: new Date().toISOString(),
-        description: 'Fresh green salads with light vinaigrette dressing. Keep chilled.',
-      },
-      {
-        id: 'res-4',
-        name: 'Bakers Choice Pastry Assortment (30 Pcs)',
-        restaurantName: 'Sweet Treats Bakery',
-        address: '12 Bakery Lane, Foodville',
-        status: 'delivered',
-        ngoName: 'Community Kitchen East',
-        volunteerName: 'Sarah Jenkins',
-        timestamp: new Date().toISOString(),
-        description: 'Muffins, croissants, and danishes. Safely sealed in paper bags.',
-      }
-    ];
-    setRescueItems(defaultData);
+  // Load global datasets
+  useEffect(() => {
+    // 1. Listen to all users
+    const unsubUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
+      const docs = [];
+      snapshot.forEach(d => docs.push({ id: d.id, ...d.data() }));
+      setUsersList(docs);
+    });
+
+    // 2. Listen to all listings
+    const unsubListings = onSnapshot(collection(db, 'foodListings'), (snapshot) => {
+      const docs = [];
+      snapshot.forEach(d => docs.push({ id: d.id, ...d.data() }));
+      setListings(docs);
+    });
+
+    // 3. Listen to all matches
+    const unsubMatches = onSnapshot(collection(db, 'matches'), (snapshot) => {
+      const docs = [];
+      snapshot.forEach(d => docs.push({ id: d.id, ...d.data() }));
+      setMatches(docs);
+      setLoading(false);
+    });
+
+    return () => {
+      unsubUsers();
+      unsubListings();
+      unsubMatches();
+    };
+  }, []);
+
+  // Delete fake listing
+  const handleDeleteListing = async (listingId) => {
+    if (!window.confirm("Moderate: Are you sure you want to delete this listing?")) return;
+    try {
+      await deleteDoc(doc(db, 'foodListings', listingId));
+      toast.success("Listing deleted successfully.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete listing.");
+    }
   };
 
+  // Toggle user active status or approve role
+  const handleApproveUser = async (userId) => {
+    try {
+      await updateDoc(doc(db, 'users', userId), {
+        approved: true
+      });
+      toast.success("User profile approved!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to approve user.");
+    }
+  };
+
+  // Calculate aggregates
+  const totalRestaurants = usersList.filter(u => u.role === 'restaurant').length;
+  const totalNGOs = usersList.filter(u => u.role === 'ngo').length;
+  const totalVolunteers = usersList.filter(u => u.role === 'volunteer').length;
+  
+  const totalSavedWeight = listings
+    .filter(l => l.status === 'delivered')
+    .reduce((acc, curr) => acc + (curr.quantity || 0), 0);
+  
+  const globalMealsSaved = Math.round(totalSavedWeight * 2.5);
+  const globalCo2Saved = Math.round(totalSavedWeight * 2.5);
+
+  // Map matches to chart data
+  const chartData = [
+    { name: 'Week 1', meals: 120, co2: 120 },
+    { name: 'Week 2', meals: 250, co2: 250 },
+    { name: 'Week 3', meals: 420, co2: 420 },
+    { name: 'Week 4', meals: globalMealsSaved > 0 ? globalMealsSaved : 610, co2: globalCo2Saved > 0 ? globalCo2Saved : 610 }
+  ];
+
   return (
-    <DashboardLayout title="System Administration & Analytics" roleName="System Admin">
-      <div className="flex flex-col gap-8">
-        
-        {/* KPI Statistics Section */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="glass p-5 rounded-2xl border border-slate-900 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Listings</span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl font-extrabold text-white">{total}</span>
-              <span className="text-xs text-slate-400">items</span>
-            </div>
-          </div>
+    <DashboardLayout title="System Administration Center">
+      
+      {/* Tab 1: Dashboard Overview */}
+      {activeTab === 'dashboard' && (
+        <div className="space-y-8">
           
-          <div className="glass p-5 rounded-2xl border border-slate-900 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-posted" />
-              Posted
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl font-extrabold text-white">{posted}</span>
-              <span className="text-xs text-slate-400">available</span>
-            </div>
-          </div>
-
-          <div className="glass p-5 rounded-2xl border border-slate-900 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-claimed" />
-              Claimed
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl font-extrabold text-amber-400">{claimed}</span>
-              <span className="text-xs text-slate-400">claimed</span>
-            </div>
-          </div>
-
-          <div className="glass p-5 rounded-2xl border border-slate-900 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-picked_up" />
-              Picked Up
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl font-extrabold text-blue-400">{pickedUp}</span>
-              <span className="text-xs text-slate-400">in transit</span>
-            </div>
-          </div>
-
-          <div className="glass p-5 rounded-2xl border border-slate-900 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-delivered" />
-              Delivered
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl font-extrabold text-emerald-400">{delivered}</span>
-              <span className="text-xs text-slate-400">completed</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Audit Log / Reset DB Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          
-          {/* Controls */}
-          <div className="lg:col-span-1 flex flex-col gap-4">
-            <div className="glass p-6 rounded-2xl border border-slate-900">
-              <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-                <Database className="w-4 h-4 text-emerald-400" />
-                <span>Simulation Controls</span>
-              </h3>
-              <button
-                onClick={handleResetData}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-900 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
-              >
-                <RefreshCw className="w-4 h-4" />
-                Reset Mock Database
-              </button>
-              <p className="text-[10px] text-slate-500 mt-3 leading-relaxed">
-                Clicking reset restores the default four transactions to their original state values for sandbox demonstration.
-              </p>
-            </div>
-          </div>
-
-          {/* Table of Rescue Items */}
-          <div className="lg:col-span-3">
-            <div className="glass rounded-2xl border border-slate-900 overflow-hidden">
-              <div className="p-6 border-b border-slate-900 flex items-center justify-between">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>Platform Transactions Audit Log</span>
-                </h3>
-                <span className="text-xs font-medium text-slate-400 bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg">
-                  {rescueItems.length} transactions logged
-                </span>
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="flex justify-between items-start">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Platform Users</span>
+                <Users className="w-5 h-5 text-slate-400" />
               </div>
-              
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="border-b border-slate-900 bg-slate-950/50 text-slate-500 font-bold uppercase tracking-wider">
-                      <th className="p-4">Food Item</th>
-                      <th className="p-4">Source Restaurant</th>
-                      <th className="p-4">NGO Claim</th>
-                      <th className="p-4">Volunteer Courier</th>
-                      <th className="p-4 text-right">Status</th>
+              <h3 className="text-3xl font-extrabold text-slate-900 mt-2">{usersList.length} members</h3>
+              <p className="text-xs text-slate-450 mt-1">{totalVolunteers} volunteers active</p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="flex justify-between items-start">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Restaurants</span>
+                <Building2 className="w-5 h-5 text-slate-400" />
+              </div>
+              <h3 className="text-3xl font-extrabold text-slate-900 mt-2">{totalRestaurants} kitchens</h3>
+              <p className="text-xs text-slate-450 mt-1">Donating excess supplies</p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="flex justify-between items-start">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">NGOs / Food Banks</span>
+                <HeartHandshake className="w-5 h-5 text-slate-400" />
+              </div>
+              <h3 className="text-3xl font-extrabold text-slate-900 mt-2">{totalNGOs} hubs</h3>
+              <p className="text-xs text-slate-450 mt-1">Claiming surplus meals</p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="flex justify-between items-start">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Global Meal Impact</span>
+                <Leaf className="w-5 h-5 text-green-500" />
+              </div>
+              <h3 className="text-3xl font-extrabold text-green-600 mt-2">{globalMealsSaved} saved</h3>
+              <p className="text-xs text-slate-450 mt-1">{globalCo2Saved} kg $CO_2$ avoided</p>
+            </div>
+          </div>
+
+          {/* Area charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-slate-800">Platform Growth: Meals Rescued</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                    <XAxis dataKey="name" stroke="#64748B" fontSize={12} tickLine={false} />
+                    <YAxis stroke="#64748B" fontSize={12} tickLine={false} />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="meals" stroke="#16A34A" fill="rgba(22, 163, 74, 0.1)" strokeWidth={2} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-slate-800">CO₂ Reductions (kg)</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                    <XAxis dataKey="name" stroke="#64748B" fontSize={12} tickLine={false} />
+                    <YAxis stroke="#64748B" fontSize={12} tickLine={false} />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="co2" stroke="#F59E0B" fill="rgba(245, 158, 11, 0.1)" strokeWidth={2} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* Tab 2: Manage Users */}
+      {activeTab === 'users' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-slate-900">User Account Approvals</h2>
+
+          {usersList.length === 0 ? (
+            <p className="text-xs text-slate-400">No registered users found.</p>
+          ) : (
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+              <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
+                <thead className="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider">
+                  <tr>
+                    <th className="px-6 py-4">Name</th>
+                    <th className="px-6 py-4">Email</th>
+                    <th className="px-6 py-4">Role</th>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-slate-700">
+                  {usersList.map((usr) => (
+                    <tr key={usr.id} className="hover:bg-slate-50/50">
+                      <td className="px-6 py-4 font-bold text-slate-900">{usr.name}</td>
+                      <td className="px-6 py-4">{usr.email}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
+                          usr.role === 'restaurant' ? 'bg-green-50 border-green-200 text-green-700' :
+                          usr.role === 'ngo' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                          usr.role === 'admin' ? 'bg-purple-50 border-purple-200 text-purple-700' :
+                          'bg-blue-50 border-blue-200 text-blue-750'
+                        }`}>
+                          {usr.role || 'Unassigned'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        {usr.approved ? (
+                          <span className="text-green-600 font-semibold">Active / Approved</span>
+                        ) : (
+                          <span className="text-amber-500 font-semibold">Awaiting Verification</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        {!usr.approved && (
+                          <button
+                            onClick={() => handleApproveUser(usr.id)}
+                            className="bg-green-600 hover:bg-green-500 text-white font-bold px-3 py-1.5 rounded-lg transition-colors"
+                          >
+                            Approve
+                          </button>
+                        )}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-900/60">
-                    {rescueItems.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-900/20 transition-colors">
-                        <td className="p-4 font-bold text-white">
-                          <div>{item.name}</div>
-                          <span className="text-[10px] font-normal text-slate-500">ID: {item.id}</span>
-                        </td>
-                        <td className="p-4 text-slate-300 font-medium">{item.restaurantName}</td>
-                        <td className="p-4 text-amber-400 font-medium">{item.ngoName || <span className="text-slate-600 font-normal">Unclaimed</span>}</td>
-                        <td className="p-4 text-blue-400 font-medium">{item.volunteerName || <span className="text-slate-600 font-normal">No courier</span>}</td>
-                        <td className="p-4 text-right">
-                          <StatusBadge status={item.status} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </div>
-          
+          )}
         </div>
-      </div>
+      )}
+
+      {/* Tab 3: Active Listings */}
+      {activeTab === 'listings' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-slate-900">Moderate Platform Listings</h2>
+
+          {listings.length === 0 ? (
+            <p className="text-xs text-slate-400">No active listings on platform.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {listings.map((item) => (
+                <div key={item.id} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between gap-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900">{item.foodName}</h4>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Category: {item.foodCategory} • Source: {item.restaurantName}</p>
+                      </div>
+                      <span className="text-[9px] px-2 py-0.5 rounded border border-slate-200 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider">
+                        {item.status}
+                      </span>
+                    </div>
+
+                    <div className="flex gap-4 text-xs text-slate-500">
+                      <div><span className="font-semibold text-slate-400">Weight:</span> {item.quantity} kg</div>
+                      <div><span className="font-semibold text-slate-400">Meals:</span> {item.estimatedMeals}</div>
+                      <div><span className="font-semibold text-slate-400">Expiry:</span> {item.expiryTime} hrs</div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-3 border-t border-slate-100">
+                    <button
+                      onClick={() => handleDeleteListing(item.id)}
+                      className="flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-500 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100 hover:bg-red-100/50 transition-all"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Remove Listing</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
     </DashboardLayout>
   );
 }

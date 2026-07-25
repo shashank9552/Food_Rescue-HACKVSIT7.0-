@@ -79,6 +79,62 @@ async function deleteCollection(collectionPath) {
   await batch.commit();
 }
 
+async function clearAuthUsers() {
+  try {
+    const listUsersResult = await admin.auth().listUsers();
+    const deletePromises = listUsersResult.users.map((user) =>
+      admin.auth().deleteUser(user.uid).catch(() => {})
+    );
+    await Promise.all(deletePromises);
+    console.log("Cleared existing Auth users.");
+  } catch (err) {
+    console.warn("Could not clear Auth users:", err.message);
+  }
+}
+
+async function seedAuthUsers() {
+  const mockUsers = [
+    {
+      uid: "spice_garden",
+      email: "spice_garden@foodrescue.ai",
+      password: "password123",
+      role: "restaurant"
+    },
+    {
+      uid: "helping_hands",
+      email: "helping_hands@foodrescue.ai",
+      password: "password123",
+      role: "ngo"
+    },
+    {
+      uid: "rahul",
+      email: "rahul@foodrescue.ai",
+      password: "password123",
+      role: "volunteer"
+    },
+    {
+      uid: "admin",
+      email: "admin@foodrescue.ai",
+      password: "password123",
+      role: "admin"
+    }
+  ];
+
+  for (const user of mockUsers) {
+    try {
+      await admin.auth().createUser({
+        uid: user.uid,
+        email: user.email,
+        password: user.password
+      });
+      await admin.auth().setCustomUserClaims(user.uid, { role: user.role });
+      console.log(`Seeded Auth user: ${user.email}`);
+    } catch (err) {
+      console.error(`Failed to seed Auth user ${user.email}:`, err.message);
+    }
+  }
+}
+
 async function seed() {
   try {
     console.log("Clearing existing collections...");
@@ -87,6 +143,9 @@ async function seed() {
     await deleteCollection("volunteers");
     await deleteCollection("foodListings");
     await deleteCollection("matches");
+
+    await clearAuthUsers();
+    await seedAuthUsers();
 
     console.log("Writing seed documents...");
     const batch = db.batch();
